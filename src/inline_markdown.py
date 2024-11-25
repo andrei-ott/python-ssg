@@ -14,6 +14,10 @@ def text_to_textnodes(text):
     return nodes
 
 
+def text_to_leafnodes(text):
+    return list(map(text_node_to_html_node, text_to_textnodes(text)))
+
+
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
     for node in old_nodes:
