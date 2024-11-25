@@ -1,6 +1,7 @@
 import unittest
 
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, text_node_to_html_node
+from leafnode import LeafNode
 
 
 class TestTextNode(unittest.TestCase):
@@ -39,6 +40,39 @@ class TestTextNode(unittest.TestCase):
         
         self.assertEqual(
             "TextNode(This is a text node, normal, https://www.boot.dev)", repr(node)
+        )
+
+    def test_text_node_to_html_node(self):
+        text = "This is a text node"
+        node = TextNode(text, TextType.NORMAL)
+        self.assertEqual(
+            text_node_to_html_node(node).to_html(), text
+        )
+
+        node = TextNode(text, TextType.BOLD)
+        self.assertEqual(
+            text_node_to_html_node(node).to_html(), f'<b>{text}</b>'
+        )
+
+        node = TextNode(text, TextType.ITALIC)
+        self.assertEqual(
+            text_node_to_html_node(node).to_html(), f'<i>{text}</i>'
+        )
+
+        node = TextNode(text, TextType.CODE)
+        self.assertEqual(
+            text_node_to_html_node(node).to_html(), f'<code>{text}</code>'
+        )
+
+        link = "https://www.boot.dev"
+        node = TextNode(text, TextType.LINK, link)
+        self.assertEqual(
+            text_node_to_html_node(node).to_html(), f'<a href="{link}">{text}</a>'
+        )
+
+        node = TextNode(text, TextType.IMAGE, link)
+        self.assertEqual(
+            text_node_to_html_node(node).to_html(), f'<img src="{link}" alt="{text}"></img>'
         )
 
 
