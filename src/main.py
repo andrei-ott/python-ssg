@@ -1,6 +1,7 @@
 import os
 import shutil
 from block_markdown import markdown_to_html_node
+from pathlib import Path
 
 def clear_directory(dir_path):
     if not os.path.exists(dir_path):
@@ -52,8 +53,7 @@ def read_file_content(file_path):
 
 def write_file_content(dest_path, content):
     dest_dir = os.path.dirname(dest_path)
-    if not os.path.exists(dest_dir):
-        os.makedirs(dest_dir)
+    os.makedirs(dest_dir, exist_ok=True)
     
     with open(dest_path, "w", encoding="utf-8") as file:
         file.write(content)
@@ -74,6 +74,20 @@ def generate_page(from_path, template_path, dest_path):
     write_file_content(dest_path, template_path_content)
 
 
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    for item in os.listdir(dir_path_content):
+        content_item = os.path.join(dir_path_content, item)
+        
+        if os.path.isdir(content_item):
+            generate_pages_recursive(content_item, template_path, os.path.join(dest_dir_path, item))
+        else:
+            content_path = Path(content_item)
+            if content_path.suffix != ".md":
+                continue
+            
+            dest_item = os.path.join(dest_dir_path, content_path.stem + ".html")
+            generate_page(content_item, template_path, dest_item)
+
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     public_directory_path = os.path.join(script_dir, "../public")
@@ -82,11 +96,11 @@ def main():
     clear_directory(public_directory_path)
     copy_directory_contents(static_directory_path, public_directory_path)
 
-    from_path = os.path.abspath(os.path.join(script_dir, "../contents/index.md"))
+    from_path = os.path.abspath(os.path.join(script_dir, "../contents"))
     template_path = os.path.abspath(os.path.join(script_dir, "../template.html"))
-    dest_path = os.path.abspath(os.path.join(script_dir, "../public/index.html"))
+    dest_path = os.path.abspath(os.path.join(script_dir, "../public"))
 
-    generate_page(from_path, template_path, dest_path)
+    generate_pages_recursive(from_path, template_path, dest_path)
 
 
 main()
