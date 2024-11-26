@@ -44,7 +44,7 @@ def heading_to_node(block):
     return ParentNode(tag, text_to_leafnodes(text))
 
 def code_to_node(block):
-    text = block[3:-3]
+    text = block[4:-3]
     return ParentNode("pre", [ParentNode("code", text_to_leafnodes(text))])
 
 def quote_to_node(block):
