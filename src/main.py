@@ -3,7 +3,7 @@ import shutil
 
 def clear_directory(dir_path):
     if not os.path.exists(dir_path):
-        raise FileNotFoundError(f"The directory '{dir_path}' does not exist.")
+        return
     if not os.path.isdir(dir_path):
         raise NotADirectoryError(f"The path '{dir_path}' is not a directory.")
     
